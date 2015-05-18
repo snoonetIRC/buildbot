@@ -4,8 +4,12 @@ from hashlib import md5
 from Crypto.Cipher import AES
 from Crypto import Random
 from fabric.api import run
+import re
 
-def find_arch():
+
+# Find architectures of servers via SSH
+# By foxlet
+def find_arch(list):
     res = run('uname -m')
     if res == 'x86_64':
         bits = 64
@@ -13,7 +17,17 @@ def find_arch():
         bits = 32
     else:
         bits = None
-    return bits
+    list.append(bits)
+
+# Find average uptimes of servers via SSH
+# By foxlet
+pattern = re.compile(r'up (\d+) days')
+def uptime(times):
+    res = run('uptime')
+    match = pattern.search(res)
+    if match:
+        days = int(match.group(1))
+        times['uts'].append(days)
 
 # AES encryption/decryption utilities
 # By Thijs van Dien
