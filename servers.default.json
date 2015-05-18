@@ -1,0 +1,18 @@
+{
+  "keys": [
+    {
+      "path": "/home/user/.ssh/id_rsa",
+      "name": "default",
+      "encrypted": false
+    }
+  ],
+  "servers": [
+    {
+      "name": "default",
+      "user": "user",
+      "host": "ssh.example.com",
+      "package": "inspircd-source",
+      "bits": 32
+    }
+  ]
+}
