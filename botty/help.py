@@ -10,5 +10,6 @@ def create_args(VERSION):
     options.add_argument('-l', '--list', help='list the current servers in the rotary and their archs', action='store_true')
     options.add_argument('-s', '--ssh', help='assume the server is an user@hostname:port set', action="store_true")
     options.add_argument('-u', '--uptime', help='list average uptimes of specified servers', action='store_true')
+    options.add_argument('-a', '--arch', help='list architectures of specified servers', action='store_true')
     arguments = options.parse_args()
     return arguments

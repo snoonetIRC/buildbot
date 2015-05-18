@@ -29,6 +29,11 @@ def uptime(times):
         days = int(match.group(1))
         times['uts'].append(days)
 
+# Convert string to boolean
+# By foxlet
+def getcheck(value):
+  return str(value).lower() in ("yes", "y", "ye", "true")
+
 # AES encryption/decryption utilities
 # By Thijs van Dien
 

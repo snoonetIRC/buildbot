@@ -7,6 +7,7 @@ from botty.help import create_args
 import botty.util
 import json
 import sys
+import tabulate
 
 VERSION = 1.0
 arguments = create_args(VERSION)
@@ -33,6 +34,8 @@ if arguments.server:
         for item in servers_data['servers']:
             if item['name'] in arguments.server:
                servers.append(item['user'] + '@'+ item['host'])
+    elif arguments.ssh:
+        servers = list(arguments.server)
 else:
     for item in servers_data['servers']:
         servers.append(item['user'] + '@'+ item['host'])
@@ -60,16 +63,25 @@ def execute_upgrade():
         print('Ignoring, already on latest.')
 
 def main():
+    print('Buildbot for Linux {} - built by Foxlet'.format(VERSION))
+    print('-'*56 +'\n')
     if arguments.uptime:
         output = {'uts':[]}
         execute(botty.util.uptime, hosts=servers, times=output)
         print('--- Average Server Uptime ' + '-'*30)
         print('    {} days'.format(sum(output['uts'])/len(output['uts'])))
         print('-'*56)
-    else:
+    elif arguments.arch:
         output = []
         execute(botty.util.find_arch, hosts=servers, list=output)
-        print(output)
-
+        for x in range(0, len(output)):
+            print('{} is {} bits'.format(servers[x], output[x]))
+    else:
+        print(tabulate.tabulate([[x] for x in servers], ['Servers selected'], tablefmt="psql"))
+        print('\nAssuming deployment with specified server(s) and package.')
+        if botty.util.getcheck(raw_input('Continue with deployment? [y/N] ').lower()) == False:
+            sys.exit(0)
+        print('Starting deployment.')
+        execute(execute_upgrade, hosts=servers)
 if __name__ == '__main__':
     main()
