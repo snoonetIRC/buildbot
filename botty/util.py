@@ -13,6 +13,7 @@ deploy_check_file = "[[ -f {} ]] || printf 'False'"
 deploy_wget = "wget {}"
 deploy_gen_hash = "openssl sha1 {}"
 deploy_tar = "tar -xvf {}"
+deploy_rm = "rm {}"
 
 def deploy_builtin(snippet):
     package = snippet['package']
@@ -35,6 +36,7 @@ def deploy_builtin(snippet):
                     print('Already deployed, use force mode to redo.')
                     deployed = True
                 else:
+                    res = run(deploy_rm.format(dpl_pkg['deploy_tar']))
                     res = run(deploy_wget.format(dpl_pkg['deploy_source']+dpl_pkg['deploy_tar']))
                     res = run(deploy_tar.format(dpl_pkg['deploy_tar']))
 
