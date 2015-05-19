@@ -3,13 +3,14 @@
 __author__ = 'foxlet'
 
 from fabric.api import env, run, execute, hosts
+from fabric import network
 from botty.help import create_args
 import botty.util
 import json
 import sys
 import tabulate
 
-VERSION = 1.0
+VERSION = 1.1
 arguments = create_args(VERSION)
 servers = []
 keys = []
@@ -48,20 +49,6 @@ for item in servers_data['keys']:
 
 env.key_filename = keys
 
-
-def get_sign_binary():
-    res = run('openssl sha1 /home/snoonet/inspircd/bin/inspircd')
-    if res != 'SHA1(/home/snoonet/inspircd/bin/inspircd)= 6cd808d4fd6ab7330c50132f31d97a7d11b44356':
-        print('Ready for Upgrade')
-
-def execute_upgrade():
-    res = run('openssl sha1 /home/snoonet/inspircd/bin/inspircd')
-    if res != 'SHA1(/home/snoonet/inspircd/bin/inspircd)= 6cd808d4fd6ab7330c50132f31d97a7d11b44356':
-        print('Ready for Upgrade')
-        res2 = run('cd /home/snoonet/inspircd/ && wget http://eu.furcode.co/buildbot/snoonet/inspircd.2.0.20.buildbot.tar.gz && killall inspircd && tar -xvf inspircd.2.0.20.buildbot.tar.gz && ./inspircd start')
-    else:
-        print('Ignoring, already on latest.')
-
 def main():
     print('Buildbot for Linux {} - built by Foxlet'.format(VERSION))
     print('-'*56 +'\n')
@@ -82,6 +69,9 @@ def main():
         if botty.util.getcheck(raw_input('Continue with deployment? [y/N] ').lower()) == False:
             sys.exit(0)
         print('Starting deployment.')
-        execute(execute_upgrade, hosts=servers)
+        with open('packages/inspircd-binary.json') as snippet:
+            data = json.load(snippet)
+        execute(botty.util.deploy_builtin, hosts=servers, snippet=data)
+    network.disconnect_all()
 if __name__ == '__main__':
     main()

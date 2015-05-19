@@ -1,0 +1,22 @@
+{
+  "package": {
+    "name": "inspircd-binary",
+    "description": "The basic builder and botty snippet to compile and deploy Snoonet's inspircd.",
+    "version": "2.0.20",
+    "signed": true,
+    "build": {
+      "use_builtin": false
+    },
+    "deploy": {
+      "deploy_source": "http://eu.furcode.co/buildbot/snoonet/",
+      "deploy_target": "/home/snoonet/inspircd",
+      "deploy_tar": "inspircd.2.0.20.buildbot.tar.gz",
+      "deploy_hash": "11930b9509b0c0f1b6e133e68127e134a00a9637",
+      "pre_deploy": [],
+      "post_deploy": [
+        "killall inspircd || true",
+        "./inspircd start"
+      ]
+    }
+  }
+}

@@ -4,8 +4,46 @@ from hashlib import md5
 from Crypto.Cipher import AES
 from Crypto import Random
 from fabric.api import run
+from fabric.context_managers import cd
 import re
 
+# Deployer builtin
+# By foxlet
+deploy_check_file = "[[ -f {} ]] || printf 'False'"
+deploy_wget = "wget {}"
+deploy_gen_hash = "openssl sha1 {}"
+deploy_tar = "tar -xvf {}"
+
+def deploy_builtin(snippet):
+    package = snippet['package']
+    dpl_pkg = package['deploy']
+
+    deployed = False
+
+    with cd(dpl_pkg['deploy_target']):
+        if dpl_pkg['pre_deploy']:
+            for item in dpl_pkg['pre_deploy']:
+                res = run(item)
+
+        if dpl_pkg['deploy_tar']:
+            if run(deploy_check_file.format(dpl_pkg['deploy_tar'])) == 'False':
+                res = run(deploy_wget.format(dpl_pkg['deploy_source']+dpl_pkg['deploy_tar']))
+                res = run(deploy_tar.format(dpl_pkg['deploy_tar']))
+            else:
+                res = run(deploy_gen_hash.format(dpl_pkg['deploy_tar']))
+                if res.split('=')[1].lstrip() == dpl_pkg['deploy_hash']:
+                    print('Already deployed, use force mode to redo.')
+                    deployed = True
+                else:
+                    res = run(deploy_wget.format(dpl_pkg['deploy_source']+dpl_pkg['deploy_tar']))
+                    res = run(deploy_tar.format(dpl_pkg['deploy_tar']))
+
+        if not deployed:
+            if dpl_pkg['post_deploy']:
+                for item in dpl_pkg['post_deploy']:
+                    res = run(item)
+        else:
+            pass
 
 # Find architectures of servers via SSH
 # By foxlet
