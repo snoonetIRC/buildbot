@@ -1,0 +1,27 @@
+{
+  "package": {
+    "name": "inspircd-source",
+    "description": "Deploys a source version of inspircd onto the target servers.",
+    "version": "2.0.20",
+    "signed": false,
+    "build": {
+      "use_builtin": false
+    },
+    "deploy": {
+      "deploy_source": "https://github.com/inspircd/inspircd/archive/",
+      "deploy_target": "/home/snoonet/inspircd",
+      "deploy_tar": "v2.0.20.tar.gz",
+      "deploy_hash": "",
+      "pre_deploy": [
+        "apt-get install build-essential"
+      ],
+      "post_deploy": [
+        "cd inspircd-2.0.20 && ./configure --enable-openssl --enable-gnutls --enable-epoll --prefix=/home/snoonet/inspircd",
+        "cd inspircd-2.0.20 && make",
+        "cd inspircd-2.0.20 && make install",
+        "killall inspircd || true",
+        "./inspircd start"
+      ]
+    }
+  }
+}
