@@ -28,10 +28,11 @@ import json
 import sys
 import tabulate
 
-VERSION = 1.1
+VERSION = 1.2
 arguments = create_args(VERSION)
 servers = []
 keys = []
+packages_active = []
 
 if arguments.config:
     try:
@@ -65,6 +66,15 @@ if not servers:
 for item in servers_data['keys']:
     keys.append(item['path'])
 
+for item in servers_data['servers']:
+    if arguments.package:
+        packages_active.append(arguments.package)
+    elif arguments.server:
+        if item['name'] in arguments.server:
+            packages_active.append(item['package'])
+    else:
+        packages_active.append(item['package'])
+
 env.key_filename = keys
 
 def main():
@@ -82,15 +92,19 @@ def main():
         for x in range(0, len(output)):
             print('{} is {} bits'.format(servers[x], output[x]))
     else:
-        print(tabulate.tabulate([[x] for x in servers], ['Servers selected'], tablefmt="psql"))
-        print(botty.util.getpacks())
+        for item in packages_active:
+            if item not in botty.util.getpacks():
+                print('Could not locate the specified package in the packages store!')
+                sys.exit(1)
+        print(tabulate.tabulate([list(x) for x in zip(servers, packages_active)], ['Servers selected', 'Packages selected'], tablefmt="psql"))
         print('\nAssuming deployment with specified server(s) and package.')
         if botty.util.getcheck(raw_input('Continue with deployment? [y/N] ').lower()) == False:
             sys.exit(0)
         print('Starting deployment.')
-        with open('packages/inspircd-binary.json') as snippet:
-            data = json.load(snippet)
-        execute(botty.util.deploy_builtin, hosts=servers, snippet=data)
+        for item in [list(x) for x in zip(servers, packages_active)]:
+            with open('packages/{}'.format(item[1])) as snippet:
+                data = json.load(snippet)
+            execute(botty.util.deploy_builtin, hosts=item[0], snippet=data)
     network.disconnect_all()
 if __name__ == '__main__':
     main()
