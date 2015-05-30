@@ -5,6 +5,7 @@ from Crypto.Cipher import AES
 from Crypto import Random
 from fabric.api import run
 from fabric.context_managers import cd
+from os import walk
 import re
 
 # Deployer builtin
@@ -73,6 +74,15 @@ def uptime(times):
 # By foxlet
 def getcheck(value):
   return str(value).lower() in ("yes", "y", "ye", "true")
+
+# Generate listing of packages (internal)
+# By foxlet
+def getpacks():
+    packagelist = []
+    for (dirpath, dirnames, filenames) in walk('packages/'):
+        packagelist.extend(filenames)
+        break
+    return packagelist
 
 # AES encryption/decryption utilities
 # By Thijs van Dien

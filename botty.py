@@ -65,6 +65,7 @@ def main():
             print('{} is {} bits'.format(servers[x], output[x]))
     else:
         print(tabulate.tabulate([[x] for x in servers], ['Servers selected'], tablefmt="psql"))
+        print(botty.util.getpacks())
         print('\nAssuming deployment with specified server(s) and package.')
         if botty.util.getcheck(raw_input('Continue with deployment? [y/N] ').lower()) == False:
             sys.exit(0)
