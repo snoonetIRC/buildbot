@@ -1,0 +1,25 @@
+{
+  "package": {
+    "name": "buildbot-base",
+    "description": "Deploy another buildbot instance with buildbot.",
+    "version": "1.2",
+    "signed": false,
+    "build": {
+      "use_builtin": false
+    },
+    "deploy": {
+      "deploy_source": "https://github.com/snoonetIRC/buildbot/archive/",
+      "deploy_target": "/home/snoonet/buildbot",
+      "deploy_tar": "1.2.tar.gz",
+      "deploy_hash": "831748e906c9f0b6a6bf970f5fc387c647556f2c",
+      "pre_deploy": [
+        "apt-get install python",
+        "pip install fabric",
+        "pip install tabulate"
+      ],
+      "post_deploy": [
+        ""
+      ]
+    }
+  }
+}
