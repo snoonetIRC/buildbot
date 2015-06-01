@@ -96,12 +96,13 @@ def main():
             if item not in botty.util.getpacks():
                 print('Could not locate the specified package in the packages store!')
                 sys.exit(1)
-        print(tabulate.tabulate([list(x) for x in zip(servers, packages_active)], ['Servers selected', 'Packages selected'], tablefmt="psql"))
+        package_gen = [list(x) for x in zip(servers, packages_active)]
+        print(tabulate.tabulate(package_gen, ['Servers selected', 'Packages selected'], tablefmt="psql"))
         print('\nAssuming deployment with specified server(s) and package.')
         if botty.util.getcheck(raw_input('Continue with deployment? [y/N] ').lower()) == False:
             sys.exit(0)
         print('Starting deployment.')
-        for item in [list(x) for x in zip(servers, packages_active)]:
+        for item in package_gen:
             with open('packages/{}'.format(item[1])) as snippet:
                 data = json.load(snippet)
             execute(botty.util.deploy_builtin, hosts=item[0], snippet=data)
