@@ -1,0 +1,28 @@
+{
+  "package": {
+    "name": "anope-source",
+    "description": "Deploy a new set of anope-based services to another server.",
+    "version": "2.0.2",
+    "signed": false,
+    "build": {
+      "use_builtin": false
+    },
+    "deploy": {
+      "deploy_source": "https://github.com/anope/anope/releases/download/2.0.2/",
+      "deploy_target": "/home/snoonet/services",
+      "deploy_tar": "anope-2.0.2-source.tar.gz",
+      "deploy_hash": "ae365d90edbc4cecbfa64cc79f39dca2db0e851c",
+      "pre_deploy": [
+        "apt-get install build-essential cmake"
+      ],
+      "post_deploy": [
+        "cd anope-2.0.2-source && ./Config -nointro -quick",
+        "cd anope-2.0.2-source && make",
+        "cd anope-2.0.2-source && make install",
+        "killall services || true",
+        "./bin/anoperc start",
+        "rm -r anope-2.0.2-source"
+      ]
+    }
+  }
+}

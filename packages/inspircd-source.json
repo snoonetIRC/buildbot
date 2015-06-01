@@ -11,7 +11,7 @@
       "deploy_source": "https://github.com/inspircd/inspircd/archive/",
       "deploy_target": "/home/snoonet/inspircd",
       "deploy_tar": "v2.0.20.tar.gz",
-      "deploy_hash": "",
+      "deploy_hash": "6d7e0ba452adad6a2bde19550697795612d8526c",
       "pre_deploy": [
         "apt-get install build-essential"
       ],
