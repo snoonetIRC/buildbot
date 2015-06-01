@@ -11,7 +11,7 @@
       "name": "default",
       "user": "user",
       "host": "ssh.example.com",
-      "package": "inspircd-source",
+      "package": "inspircd-source.json",
       "bits": 32
     }
   ]
