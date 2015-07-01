@@ -1,0 +1,29 @@
+{
+  "package": {
+    "name": "inspircd-upgrade",
+    "description": "Deploys a source version of inspircd onto the target servers, upgrade only.",
+    "version": "2.0.20",
+    "signed": false,
+    "build": {
+      "use_builtin": false
+    },
+    "deploy": {
+      "deploy_source": "https://github.com/inspircd/inspircd/archive/",
+      "deploy_target": "/home/snoonet/inspircd",
+      "deploy_tar": "v2.0.20.tar.gz",
+      "deploy_hash": "6d7e0ba452adad6a2bde19550697795612d8526c",
+      "pre_deploy": [
+      ],
+      "post_deploy": [
+        "cd inspircd-2.0.20 && ./configure --enable-openssl --enable-gnutls --enable-epoll --prefix=/home/snoonet/inspircd",
+        "cp inspircd-2.0.20/src/modules/extra/{m_regex_pcre.cpp,m_geoip.cpp} inspircd-2.0.20/src/modules/",
+        "UL=https://raw.githubusercontent.com/inspircd/inspircd-extras/master/2.0; cd inspircd-2.0.20/src/modules/ && wget $UL/m_invitenotify.cpp && wget $UL/m_totp.cpp && wget $UL/m_namedstats.cpp && wget $UL/m_join0.cpp && wget $UL/m_joinpartsno.cpp && wget $UL/m_override_umode.cpp && wget $UL/m_fullversion.cpp && wget $UL/m_custompenalty.cpp && wget $UL/m_invisible.cpp && wget $UL/m_noctcp_user.cpp && wget $UL/m_quietban.cpp && wget $UL/m_antibear.cpp && wget $UL/m_antibottler.cpp && wget https://goo.gl/ZM9mLz -O m_globalmessageflood.cpp && wget $UL/m_require_auth.cpp && wget $UL/m_flashpolicyd.cpp",
+        "cd inspircd-2.0.20 && make",
+        "cd inspircd-2.0.20 && make install",
+        "rm -r inspircd-2.0.20/",
+        "killall inspircd || true",
+        "./inspircd start"
+      ]
+    }
+  }
+}
