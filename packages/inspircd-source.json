@@ -13,12 +13,16 @@
       "deploy_tar": "v2.0.20.tar.gz",
       "deploy_hash": "6d7e0ba452adad6a2bde19550697795612d8526c",
       "pre_deploy": [
-        "apt-get install build-essential"
+        "sudo apt-get update",
+        "sudo apt-get install -y ntp build-essential git bison flex libssl-dev pkg-config geoip-bin geoip-database libgeoip-dev libgeoip1 libpcre3-dev libgnutls-dev"
       ],
       "post_deploy": [
         "cd inspircd-2.0.20 && ./configure --enable-openssl --enable-gnutls --enable-epoll --prefix=/home/snoonet/inspircd",
+        "cp inspircd-2.0.20/src/modules/extra/{m_regex_pcre.cpp,m_geoip.cpp} inspircd-2.0.20/src/modules/",
+        "UL=https://raw.githubusercontent.com/inspircd/inspircd-extras/master/2.0; cd inspircd-2.0.20/src/modules/ && wget $UL/m_invitenotify.cpp && wget $UL/m_totp.cpp && wget $UL/m_namedstats.cpp && wget $UL/m_join0.cpp && wget $UL/m_joinpartsno.cpp && wget $UL/m_override_umode.cpp && wget $UL/m_fullversion.cpp && wget $UL/m_custompenalty.cpp && wget $UL/m_invisible.cpp && wget $UL/m_noctcp_user.cpp && wget $UL/m_quietban.cpp && wget $UL/m_antibear.cpp && wget $UL/m_antibottler.cpp && wget https://goo.gl/ZM9mLz -O m_globalmessageflood.cpp && wget $UL/m_require_auth.cpp && wget $UL/m_flashpolicyd.cpp",
         "cd inspircd-2.0.20 && make",
         "cd inspircd-2.0.20 && make install",
+        "rm -r inspircd-2.0.20/",
         "killall inspircd || true",
         "./inspircd start"
       ]
