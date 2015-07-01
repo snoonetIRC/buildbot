@@ -13,12 +13,15 @@
       "deploy_tar": "anope-2.0.2-source.tar.gz",
       "deploy_hash": "ae365d90edbc4cecbfa64cc79f39dca2db0e851c",
       "pre_deploy": [
-        "apt-get install build-essential cmake"
+        "sudo apt-get update",
+        "sudo apt-get install -y build-essential cmake libmysqlclient-dev"
       ],
       "post_deploy": [
+        "cd anope-2.0.2-source && wget https://gist.githubusercontent.com/foxlet/de15c352b02243893399/raw/7bfcf0b2b930247239332b88b49a9c6ff44a3675/config.cache",
+        "cp anope-2.0.2-source/modules/extra/{m_mysql.cpp,m_sqlite.cpp,m_sasl_dh-blowfish.cpp,m_sql_authentication.cpp,m_regex_posix.cpp,m_sasl_dh-aes.cpp,m_ssl_gnutls.cpp,m_ssl_openssl.cpp,m_regex_pcre.cpp,m_sql_oper.cpp,m_sql_log.cpp} anope-2.0.2-source/modules/",
         "cd anope-2.0.2-source && ./Config -nointro -quick",
-        "cd anope-2.0.2-source && make",
-        "cd anope-2.0.2-source && make install",
+        "cd anope-2.0.2-source/build && make",
+        "cd anope-2.0.2-source/build && make install",
         "killall services || true",
         "./bin/anoperc start",
         "rm -r anope-2.0.2-source"
